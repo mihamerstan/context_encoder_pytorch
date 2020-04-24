@@ -98,7 +98,7 @@ recon_image = input_cropped.clone()
 recon_image.data[:,:,old_div(opt.imageSize,4):old_div(opt.imageSize,4)+old_div(opt.imageSize,2),old_div(opt.imageSize,4):old_div(opt.imageSize,4)+old_div(opt.imageSize,2)] = fake.data
 
 utils.save_image(opt.output_directory  + opt.output_name_prefix + '_orig.png',image[0])
-utils.save_image(opt.output_directory  + opt.output_name_prefix + '_cropped.png',input_cropped.data[0])
+#utils.save_image(opt.output_directory  + opt.output_name_prefix + '_cropped.png',input_cropped.data[0])
 utils.save_image(opt.output_directory  + opt.output_name_prefix + '_recons.png',recon_image.data[0])
 
 #print('%.4f' % errG.data[0])
