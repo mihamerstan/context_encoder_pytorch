@@ -22,6 +22,8 @@ import utils
 parser = argparse.ArgumentParser()
 parser.add_argument('--dataset',  default='streetview', help='cifar10 | lsun | imagenet | folder | lfw ')
 parser.add_argument('--test_image', required=True, help='path to dataset')
+parser.add_argument('--output_directory',default='.',help='path to output directory. (it needs to be made already!!!)')
+parser.add_argument('--output_name_prefix',required=True,help='prefix name for the outputfiles that will be saved')
 parser.add_argument('--workers', type=int, help='number of data loading workers', default=4)
 parser.add_argument('--batchSize', type=int, default=64, help='input batch size')
 parser.add_argument('--imageSize', type=int, default=128, help='the height / width of the input image to network')
@@ -95,9 +97,9 @@ errG = criterionMSE(fake,real_center)
 recon_image = input_cropped.clone()
 recon_image.data[:,:,old_div(opt.imageSize,4):old_div(opt.imageSize,4)+old_div(opt.imageSize,2),old_div(opt.imageSize,4):old_div(opt.imageSize,4)+old_div(opt.imageSize,2)] = fake.data
 
-utils.save_image('val_real_samples.png',image[0])
-utils.save_image('val_cropped_samples.png',input_cropped.data[0])
-utils.save_image('val_recon_samples.png',recon_image.data[0])
+utils.save_image(opt.output_directory  + opt.output_name_prefix + '_orig.png',image[0])
+utils.save_image(opt.output_directory  + opt.output_name_prefix + '_cropped.png',input_cropped.data[0])
+utils.save_image(opt.output_directory  + opt.output_name_prefix + '_recons.png',recon_image.data[0])
 
-print('%.4f' % errG.data[0])
+#print('%.4f' % errG.data[0])
 
