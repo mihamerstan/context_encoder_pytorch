@@ -99,5 +99,5 @@ utils.save_image('val_real_samples.png',image[0])
 utils.save_image('val_cropped_samples.png',input_cropped.data[0])
 utils.save_image('val_recon_samples.png',recon_image.data[0])
 
-print('%.4f' % errG.data[0])
+#print('%.4f' % errG.data[0])
 

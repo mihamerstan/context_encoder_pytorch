@@ -84,19 +84,28 @@ real_cpu, _ = next(dataiter)
 
 input_real.data.resize_(real_cpu.size()).copy_(real_cpu)
 input_cropped.data.resize_(real_cpu.size()).copy_(real_cpu)
+# real_center_cpu = real_cpu[:,:,57:71,57:71] ## Changed this
 real_center_cpu = real_cpu[:,:,old_div(opt.imageSize,4):old_div(opt.imageSize,4)+old_div(opt.imageSize,2),old_div(opt.imageSize,4):old_div(opt.imageSize,4)+old_div(opt.imageSize,2)]
-real_center.data.resize_(real_center_cpu.size()).copy_(real_center_cpu)
 
+with torch.no_grad():
+	real_center.resize_(real_center_cpu.size()).copy_(real_center_cpu)
+# input_cropped.data[:,0,59:69,59:69] = 2*117.0/255.0 - 1.0
+# input_cropped.data[:,1,59:69,59:69] = 2*104.0/255.0 - 1.0
+# input_cropped.data[:,2,59:69,59:69] = 2*123.0/255.0 - 1.0
 input_cropped.data[:,0,old_div(opt.imageSize,4)+opt.overlapPred:old_div(opt.imageSize,4)+old_div(opt.imageSize,2)-opt.overlapPred,old_div(opt.imageSize,4)+opt.overlapPred:old_div(opt.imageSize,4)+old_div(opt.imageSize,2)-opt.overlapPred] = 2*117.0/255.0 - 1.0
 input_cropped.data[:,1,old_div(opt.imageSize,4)+opt.overlapPred:old_div(opt.imageSize,4)+old_div(opt.imageSize,2)-opt.overlapPred,old_div(opt.imageSize,4)+opt.overlapPred:old_div(opt.imageSize,4)+old_div(opt.imageSize,2)-opt.overlapPred] = 2*104.0/255.0 - 1.0
 input_cropped.data[:,2,old_div(opt.imageSize,4)+opt.overlapPred:old_div(opt.imageSize,4)+old_div(opt.imageSize,2)-opt.overlapPred,old_div(opt.imageSize,4)+opt.overlapPred:old_div(opt.imageSize,4)+old_div(opt.imageSize,2)-opt.overlapPred] = 2*123.0/255.0 - 1.0
 
 fake = netG(input_cropped)
+vutils.save_image(fake,'fake.png',normalize=True)
+fake_int = nn.functional.interpolate(fake,14)
+vutils.save_image(fake_int,'fake_int.png',normalize=True)
+
 errG = criterionMSE(fake,real_center)
 
 recon_image = input_cropped.clone()
 recon_image.data[:,:,old_div(opt.imageSize,4):old_div(opt.imageSize,4)+old_div(opt.imageSize,2),old_div(opt.imageSize,4):old_div(opt.imageSize,4)+old_div(opt.imageSize,2)] = fake.data
-
+# recon_image.data[:,:,57:71,57:71] = fake.data
 vutils.save_image(real_cpu,'val_real_samples.png',normalize=True)
 vutils.save_image(input_cropped.data,'val_cropped_samples.png',normalize=True)
 vutils.save_image(recon_image.data,'val_recon_samples.png',normalize=True)
