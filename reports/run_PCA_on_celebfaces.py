@@ -1,4 +1,9 @@
 from utils import plot_image_grid, make_pyramids, PCA_pyramids
+import os
+from skimage import rgb2gray
+import matplotlib.pyplot as plt
+import numpy as np
+import pickle 
 
 input_image_dir = '../nn_output/'
 original_images_path_list = []
