@@ -1,6 +1,6 @@
 from utils import plot_image_grid, make_pyramids, PCA_pyramids
 import os
-from skimage import rgb2gray
+from skimage.color import rgb2gray
 import matplotlib.pyplot as plt
 import numpy as np
 import pickle 
@@ -25,6 +25,6 @@ for level, (eig_vals,eig_vecs) in enumerate(eig_vals_vecs_per_level):
     #Take top 10 eigenvectors
     images = eig_vecs[-10:]
     images = np.flipud(images)
-    plot_title = "CelebA Top 10 eigenvectors: " + level
-    plot_image_grid(images,'Top 10 eigenvectors',image_shape=eig_vecs[0].shape)
-pickle.dump(eig_vals_vecs_per_level, 'celebA_pyramids.p')
+    plot_title = "CelebA Top 10 eigenvectors: " + str(level)
+    plot_image_grid(images,plot_title,image_shape=eig_vecs[0].shape)
+pickle.dump(eig_vals_vecs_per_level, open('celebA_pyramids.p','wb'))
