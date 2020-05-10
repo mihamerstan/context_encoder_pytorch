@@ -20,6 +20,11 @@ def save_image(filename, data):
     img = Image.fromarray(img)
     img.save(filename)
 
+def save_image_color(filename, data):
+    img = data.clone().add(1).div(2).mul(255).clamp(0, 255).numpy()
+    img = img.transpose(0, 1).astype("uint8")
+    img = Image.fromarray(img)
+    img.save(filename)
 
 def gram_matrix(y):
     (b, ch, h, w) = y.size()

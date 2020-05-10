@@ -14,6 +14,7 @@ import torchvision.datasets as dset
 import torchvision.transforms as transforms
 import torchvision.utils as vutils
 from torch.autograd import Variable
+from torch.autograd.functional import jacobian
 
 from model_small import _netG
 
@@ -56,6 +57,8 @@ netG = _netG(opt)
 netG.load_state_dict(torch.load(opt.netG,map_location=lambda storage, location: storage)['state_dict'])
 # netG.requires_grad = False
 netG.eval()
+
+
 
 #transform is applied to image below.  image is class PIL.Image
 transform = transforms.Compose([transforms.ToTensor(),
@@ -109,6 +112,15 @@ input_cropped.data[:,2,int(56+opt.overlapPred):int(72-opt.overlapPred),int(56+op
 fake = netG(input_cropped)
 errG = criterionMSE(fake,real_center)
 
+# zerov = input_cropped*0
+# print("zerov max: {}".format(zerov.max()))
+# print("zerov min: {}".format(zerov.min()))
+# zerov[0,0,0,0] = 0.1
+# zero = netG(zerov)
+# print("zero max: {}".format(zero.max()))
+# print("zero min: {}".format(zero.min()))
+# print(type(zero))
+# print(zero.__dir__())
 # Add fake back into center of input_cropped
 recon_image = input_cropped.clone()
 recon_image.data[:,:,56:72,56:72] = fake.data
@@ -117,5 +129,20 @@ utils.save_image(opt.output_directory  + opt.output_name_prefix + '_orig.png',im
 utils.save_image(opt.output_directory  + opt.output_name_prefix + '_cropped.png',input_cropped.data[0])
 utils.save_image(opt.output_directory  + opt.output_name_prefix + '_recons.png',recon_image.data[0])
 
-print('\nMSE Loss: %.4f\n' % errG.item())
+utils.save_image_color(opt.output_directory  + opt.output_name_prefix + '_color1_orig.png',image[0][1])
+utils.save_image_color(opt.output_directory  + opt.output_name_prefix + '_color1_cropped.png',input_cropped.data[0][1])
+utils.save_image_color(opt.output_directory  + opt.output_name_prefix + '_color1_recons.png',recon_image.data[0][1])
 
+print('\nMSE Loss: %.4f\n' % errG.item())
+# The Jacobian stuff
+# print("Shape of input_cropped: ",input_cropped.shape)
+# print("Shape of fake: ",fake.shape)
+# # torch.save(zero,"jacobians/zero_202535.pkl")
+# torch.save(fake,"jacobians/fake_202535.pkl")
+# jacob = jacobian(netG,input_cropped)
+
+# jacob_dir = 'jacobians/'
+# jacob_filename = 'jacob_202535.pkl'
+# torch.save(jacob,jacob_dir+jacob_filename)
+# print("Shape of jacob: ",jacob.shape)
+# torch.save(input_cropped,"jacobians/input_cropped_202535.pkl")

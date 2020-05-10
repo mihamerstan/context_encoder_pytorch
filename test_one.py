@@ -14,6 +14,7 @@ import torchvision.datasets as dset
 import torchvision.transforms as transforms
 import torchvision.utils as vutils
 from torch.autograd import Variable
+from torch.autograd.functional import jacobian
 
 from model import _netG
 
@@ -101,5 +102,13 @@ utils.save_image(opt.output_directory  + opt.output_name_prefix + '_orig.png',im
 #utils.save_image(opt.output_directory  + opt.output_name_prefix + '_cropped.png',input_cropped.data[0])
 utils.save_image(opt.output_directory  + opt.output_name_prefix + '_recons.png',recon_image.data[0])
 
-#print('%.4f' % errG.data[0])
-
+print('\nMSE Loss: %.4f\n' % errG.item())
+# The Jacobian Stuff
+# print("Shape of input_cropped: ",input_cropped.shape)
+# print("Shape of fake: ",fake.shape)
+# # torch.save(zero,"jacobians/zero_64px_202474.pkl")
+# torch.save(fake,"jacobians/fake_64px_202535.pkl")
+# jacob = jacobian(netG,input_cropped)
+# torch.save(jacob,'jacobians/jacob_64px_202535.pkl')
+# print("Shape of jacob: ",jacob.shape)
+# torch.save(input_cropped,"jacobians/input_cropped_64px_202535.pkl")
