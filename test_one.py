@@ -14,8 +14,9 @@ import torchvision.datasets as dset
 import torchvision.transforms as transforms
 import torchvision.utils as vutils
 from torch.autograd import Variable
-from torch.autograd.functional import jacobian
-
+#from torch.autograd.functional import jacobian
+import pkg_resources
+pkg_resources.require("torch==1.5.0")
 from model import _netG
 
 import utils
@@ -99,7 +100,7 @@ recon_image = input_cropped.clone()
 recon_image.data[:,:,old_div(opt.imageSize,4):old_div(opt.imageSize,4)+old_div(opt.imageSize,2),old_div(opt.imageSize,4):old_div(opt.imageSize,4)+old_div(opt.imageSize,2)] = fake.data
 
 utils.save_image(opt.output_directory  + opt.output_name_prefix + '_orig.png',image[0])
-#utils.save_image(opt.output_directory  + opt.output_name_prefix + '_cropped.png',input_cropped.data[0])
+utils.save_image(opt.output_directory  + opt.output_name_prefix + '_cropped.png',input_cropped.data[0])
 utils.save_image(opt.output_directory  + opt.output_name_prefix + '_recons.png',recon_image.data[0])
 
 print('\nMSE Loss: %.4f\n' % errG.item())
