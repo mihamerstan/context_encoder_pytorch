@@ -6,7 +6,7 @@ import numpy as np
 import pickle 
 
 
-input_image_dir = '../nn_output/'
+input_image_dir = '/scratch/awd275/context_encoder_pytorch_output/20200512_output/'
 original_images_path_list = []
 
 for file in os.listdir(input_image_dir):
@@ -20,7 +20,7 @@ del(original_images)
 cropped_original_pyramids = make_pyramids(original_cropped,3)
 cropped_orig_eig_per_level = PCA_pyramids(cropped_original_pyramids)
     
-pickle.dump(cropped_orig_eig_per_level, open('celebA_orig_cropped_eigen.p','wb'))
+pickle.dump(cropped_orig_eig_per_level, open('celebA_1000_orig_cropped_eigen.p','wb'))
 
 del(cropped_original_pyramids)
 del(cropped_orig_eig_per_level)
