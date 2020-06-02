@@ -16,7 +16,7 @@ import torchvision.utils as vutils
 from torch.autograd import Variable
 from torch.autograd.functional import jacobian
 
-from model import _netG
+from model_bf import _netG
 
 import utils
 
@@ -118,7 +118,8 @@ print("zero min: {}".format(zero.min()))
 # print("Shape of fake: ",fake.shape)
 # # torch.save(zero,"jacobians/zero_64px_202474.pkl")
 # torch.save(fake,"jacobians/fake_64px_202535.pkl")
-jacob = jacobian(netG,input_cropped)
-torch.save(jacob,'jacobians/jacob_64px_202474.pkl')
-print("Shape of jacob: ",jacob.shape)
-torch.save(input_cropped,"jacobians/input_cropped_64px_202474.pkl")
+# jacob = jacobian(netG,input_cropped)
+# torch.save(jacob,'jacobians/jacob_64px_202476.pkl')
+# print("Shape of jacob: ",jacob.shape)
+torch.save(input_cropped,"jacobians/input_cropped_64px_202476.pkl")
+torch.save(fake,"jacobians/filled_center_64px_202476.pkl")
