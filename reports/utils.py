@@ -1,19 +1,30 @@
 from sklearn.datasets import fetch_olivetti_faces
 import matplotlib.pyplot as plt
 import numpy as np
-import cv2
+#import cv2 #Moved into make_pyramids
 import os
 from skimage.color import rgb2gray
 import pickle
 
-def plot_image_grid(images, title, image_shape=(64,64),n_col=5, n_row=2, bycol=0, row_titles=None,col_titles=None):
-    fig,axes = plt.subplots(nrows=n_row,ncols=n_col,figsize=(2. * n_col, 2.26 * n_row))
-    for i, comp in enumerate(images):
-        row,col = reversed(divmod(i,n_row)) if bycol else divmod(i,n_col)       
-        cax = axes[row,col]
-        cax.imshow(comp.reshape(image_shape), cmap='gray',
+def plot_image_grid(images, 
+                    title, 
+                    image_shape=(64,64),
+                    ncols=5,
+                    nrows=2, 
+                    bycol=0, 
+                    row_titles=None,
+                    col_titles=None,
+                    save=False):
+    fig,axes = plt.subplots(nrows=nrows,ncols=ncols,figsize=(2. * n_col, 2.26 * n_row))
+    for i, image in enumerate(images):
+        row,col = reversed(divmod(i,n_row)) if bycol else divmod(i,n_col) 
+        if nrow==1:
+            cax = axes[col]
+        else:
+            cax = axes[row,col]
+        cax.imshow(image.reshape(image_shape), cmap='gray',
                    interpolation='nearest',
-                   vmin=comp.min(), vmax=comp.max())
+                   vmin=image.min(), vmax=image.max())
         cax.set_xticks(())
         cax.set_yticks(())
     if row_titles is not None :
@@ -26,7 +37,8 @@ def plot_image_grid(images, title, image_shape=(64,64),n_col=5, n_row=2, bycol=0
     fig.suptitle(title)
     fig.tight_layout()
     plt.subplots_adjust(top=0.9)
-    plt.savefig(title + '.pdf',bbox_inches='tight')
+    if save is True:
+        plt.savefig(title + '.pdf',bbox_inches='tight')
     plt.show()
 
 def make_pyramids(images_list,num_levels):
@@ -37,6 +49,7 @@ def make_pyramids(images_list,num_levels):
     
     Access the return by all_pyramids_list[image_index][level_index]
     '''
+    import cv2 # did this here because jupyter has trouble finding environments, and cv2 isn't installed by default...
     all_pyramids_list = []
     for image in images_list:
         prev_level = image
@@ -64,21 +77,34 @@ def PCA_pyramids(all_pyramids_list):
 
         for img_idx in range(num_pyramids):
             image = all_pyramids_list[img_idx][level_idx]
-            #We "ravel" the image into a 1d array, we will have to unravel it later
+            #We "unravel" the image into a 1d array, we will have to "ravel" it later
             X[img_idx,:] = np.reshape(image,(-1,num_pixels))
         #Perform PCA on X
         cov = (X-X.mean(axis=0)).T@(X-X.mean(axis=0))
         eig_vals,eig_vecs = np.linalg.eigh(cov)
-        #unravel each eigenvector
+        #"ravel" each eigenvector
         new_eigvec_list = []
         for ii in range(len(eig_vecs)):
             num_pixels_per_side = int(num_pixels**.5)#this is square root of total pixels
-            new_eig_vec = np.reshape(eig_vecs[:,ii],(num_pixels_per_side,num_pixels_per_side),'F')
-            new_eigvec_list.append(new_eig_vec.T) # have to transpose for some reason? this isnt a good sign
+            new_eig_vec = ravel_image_vec(eig_vecs[:,ii],num_pixels_per_side)
+            
+            new_eigvec_list.append(new_eig_vec) 
         eig_vals_vecs_per_level.append((eig_vals,new_eigvec_list))
         
     return eig_vals_vecs_per_level
 
+def unravel_image(image):
+    num_pixels = image.shape[0]*image.shape[1]
+    image_vector = np.reshape(image,(-1,num_pixels))
+    return image_vector
+def ravel_image_vec(image_vector,num_pixels_per_side):
+    image = np.reshape(image_vector,(num_pixels_per_side,num_pixels_per_side),'F')
+    image = image.T
+    return image
+
+
+    
+                
 
             
             

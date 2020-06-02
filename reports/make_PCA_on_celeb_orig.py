@@ -5,22 +5,19 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pickle 
 
-print('starting')
-input_image_dir = '../nn_output/'
-original_images_path_list = []
+input_image_dir = '/scratch/awd275/context_encoder_pytorch_data/20200512_CE_output/'
+output_file_path = '/scratch/awd275/context_encoder_pytorch_data/20200512_eigen_pyramids/celebA_1000_orig_eigen.p'
+orig_images_path_list = []
 
 for file in os.listdir(input_image_dir):
     if file.endswith("orig.png"):
-        original_images_path_list.append(file)
-print('files read')
-original_images = [rgb2gray(plt.imread(input_image_dir+file)) for file in original_images_path_list]
+        orig_images_path_list.append(file)
 
-original_pyramids = make_pyramids(original_images,3)
-orig_eig_per_level = PCA_pyramids(original_pyramids)
-print('PCA pyramids made')   
+orig_images = [rgb2gray(plt.imread(input_image_dir+file)) for file in orig_images_path_list]
 
-pickle.dump(orig_eig_per_level, open('celebA_orig_eigen.p','wb'))
-print('dumped')
-del(original_pyramids)
-del(orig_eig_per_level)
-print('ending')
+orig_pyramids = make_pyramids(orig_images,3)
+orig_eig_per_level = PCA_pyramids(orig_pyramids)
+
+pickle.dump(orig_eig_per_level, open(output_file_path,'wb'))
+
+

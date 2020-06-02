@@ -2,7 +2,7 @@
 #Inputs to be edited
 con_enc_dir ='/home/awd275/context_encoder_pytorch/'
 path_to_model_chkpt = con_enc_dir + 'models/model_celebA_100k_100iter_04212020.pth'
-input_image_dir = '/scratch/awd275/img_align_celebA/'
+input_image_dir = '/scratch/awd275/img_align_celeba/'
 output_dir = '/scratch/awd275/context_encoder_pytorch_output/20200512_output/'
 #####################
 import os
@@ -12,7 +12,7 @@ input_images_path_list = []
 for ii in range(1000):
     img_number = ii+120000
     file_name = str(img_number)+'.jpg'
-    input_images_path_list.append(input_image_dir+file_name)
+    input_images_path_list.append(file_name)
 #for file in os.listdir(input_image_dir):
 #    if file.endswith(".jpg"):
 #        input_images_path_list.append(file)

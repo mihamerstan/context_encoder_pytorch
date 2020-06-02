@@ -6,21 +6,20 @@ import numpy as np
 import pickle 
 
 
-input_image_dir = '../nn_output/'
-original_images_path_list = []
+input_image_dir = '/scratch/awd275/context_encoder_pytorch_data/20200512_CE_output/'
+output_file_path = '/scratch/awd275/context_encoder_pytorch_data/20200512_eigen_pyramids/celebA_1000_orig_cropped_eigen.p'
+orig_images_path_list = []
 
 for file in os.listdir(input_image_dir):
     if file.endswith("orig.png"):
-        original_images_path_list.append(file)
+        orig_images_path_list.append(file)
 
-original_images = [rgb2gray(plt.imread(input_image_dir+file)) for file in original_images_path_list]
-original_cropped = [image[32:(32+64), 32:(32+64)] for image in original_images]
-del(original_images)
+orig_images = [rgb2gray(plt.imread(input_image_dir+file)) for file in orig_images_path_list]
+orig_cropped = [image[32:(32+64), 32:(32+64)] for image in orig_images]
+del(orig_images)
 
-cropped_original_pyramids = make_pyramids(original_cropped,3)
-cropped_orig_eig_per_level = PCA_pyramids(cropped_original_pyramids)
-    
-pickle.dump(cropped_orig_eig_per_level, open('celebA_orig_cropped_eigen.p','wb'))
+cropped_orig_pyramids = make_pyramids(orig_cropped,3)
+cropped_orig_eig_per_level = PCA_pyramids(cropped_orig_pyramids)
 
-del(cropped_original_pyramids)
-del(cropped_orig_eig_per_level)
+pickle.dump(cropped_orig_eig_per_level, open(output_file_path,'wb'))
+
